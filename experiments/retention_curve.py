@@ -12,7 +12,7 @@ from agent.simple_agent import SimpleAgent
 from memory.fifo_memory import FIFOMemory
 from memory.utility_weighted_memory import UtilityWeightedMemory
 from memory.lru_memory import LRUMemory
-from memory.similarity_memory import SimilarityOnlyMemory
+from memory.embedding_similarity_memory import EmbeddingSimilarityMemory
 
 
 # Realistic Data Generators
@@ -113,14 +113,14 @@ if __name__ == "__main__":
     print("=== Retention Curves ===")
     fifo_curve = run_retention(FIFOMemory, "FIFO")
     lru_curve = run_retention(LRUMemory, "LRU")
-    sim_curve = run_retention(SimilarityOnlyMemory, "Similarity")
+    sim_curve = run_retention(EmbeddingSimilarityMemory, "Embedding-Similarity")
     uwe_curve = run_retention(UtilityWeightedMemory, "Utility-Weighted")
 
     # Plot retention curves
     plt.figure(figsize=(10, 6))
     plt.plot(fifo_curve, label="FIFO", linewidth=2)
     plt.plot(lru_curve, label="LRU", linewidth=2)
-    plt.plot(sim_curve, label="Similarity-Only", linewidth=2)
+    plt.plot(sim_curve, label="Embedding-Similarity", linewidth=2)
     plt.plot(uwe_curve, label="Utility-Weighted", linewidth=2)
     plt.xlabel("Number of Interactions")
     plt.ylabel("High-Impact Memory Recall")

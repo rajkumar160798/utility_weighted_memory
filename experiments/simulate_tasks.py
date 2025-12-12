@@ -10,6 +10,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from memory.fifo_memory import FIFOMemory
 from memory.utility_weighted_memory import UtilityWeightedMemory
 from memory.lru_memory import LRUMemory
+from memory.embedding_similarity_memory import EmbeddingSimilarityMemory
 from agent.simple_agent import SimpleAgent
 
 
@@ -60,4 +61,5 @@ def run_experiment(memory_class, label):
 if __name__ == "__main__":
     run_experiment(FIFOMemory, "FIFO")
     run_experiment(LRUMemory, "LRU")
+    run_experiment(EmbeddingSimilarityMemory, "Embedding-Similarity")
     run_experiment(UtilityWeightedMemory, "Utility-Weighted")
