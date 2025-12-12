@@ -40,15 +40,20 @@ class UtilityWeightedMemory(BaseMemory):
         self.memories.append(memory)
 
     def retrieve(self, query: str, top_k: int = 1) -> List[Dict[str, Any]]:
-        # Keyword match and update access count and last access time
-        results = []
+        # Keyword match, sort by utility score, and update access count
+        candidates = []
         current_time = time.time()
         for m in self.memories:
             if query.lower() in m["content"].lower():
                 m["access_count"] = m.get("access_count", 0) + 1
                 m["last_access_time"] = current_time
-                results.append(m)
-        return results[:top_k]
+                # Calculate score dynamically for sorting
+                score = self._score(m, current_time)
+                candidates.append((score, m))
+        
+        # Sort by score descending (Highest Utility First)
+        candidates.sort(key=lambda x: x[0], reverse=True)
+        return [c[1] for c in candidates][:top_k]
 
     def stats(self) -> Dict[str, Any]:
         return {
