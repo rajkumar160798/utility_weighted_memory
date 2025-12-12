@@ -13,7 +13,7 @@ class BaseMemory(ABC):
         pass
 
     @abstractmethod
-    def retrieve(self, query: str, top_k: int = 1) -> List[Dict[str, Any]]:
+    def retrieve(self, query: str, top_k: int = 1, current_time: float = None) -> List[Dict[str, Any]]:
         pass
 
     @abstractmethod

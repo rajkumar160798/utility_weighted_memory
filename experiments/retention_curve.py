@@ -50,19 +50,27 @@ def run_retention(memory_class, label, w_freq=None, w_impact=None):
     low_impact = [f"{random.choice(low_impact_templates)} [{i}]" for i in range(95)]
 
     retention = []
+    
+    # SIMULATED CLOCK - Start at time 0
+    sim_time = 0.0
 
-    # Insert high-impact first
+    # Insert high-impact first (Time: 0 to 5)
     for fact in high_impact:
-        agent.observe(fact, impact=1.0)
+        sim_time += 1.0  # Advance time by "1 hour" per step
+        agent.observe(fact, impact=1.0, current_time=sim_time)
 
-    # Gradually add noise and test recall
+    # Gradually add noise and test recall (Time: 6 to 100)
     queries = ["Database", "Config", "Compliance", "Security", "Billing"]
     for i, noise in enumerate(low_impact):
-        agent.observe(noise, impact=0.1)
+        sim_time += 1.0  # Time marches forward
+        
+        # Observe noise with the advanced time
+        agent.observe(noise, impact=0.1, current_time=sim_time)
 
+        # Test recall with simulated time so agents know memories are aging
         recalled = 0
         for query in queries:
-            if agent.ask(query):
+            if agent.ask(query, current_time=sim_time):
                 recalled += 1
 
         retention.append(recalled / len(queries))
@@ -86,6 +94,17 @@ def run_sensitivity_sweep():
     print("Impact Weight vs Final Retention:")
     for w, retention in zip(impact_weights, final_retentions):
         print(f"  w_impact={w:.1f}: {retention:.2%}")
+    
+    # Create sensitivity plot
+    plt.figure(figsize=(6, 4))
+    plt.plot(impact_weights, final_retentions, marker='o', linewidth=2, markersize=8)
+    plt.xlabel("Impact Weight (w_impact)", fontsize=11)
+    plt.ylabel("Final Retention Rate", fontsize=11)
+    plt.title("Parameter Sensitivity: Impact Weight vs. Retention", fontsize=12)
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.savefig("sensitivity_analysis.png", dpi=150)
+    print("\nSaved sensitivity_analysis.png")
     
     return impact_weights, final_retentions
 

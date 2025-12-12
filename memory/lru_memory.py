@@ -21,7 +21,7 @@ class LRUMemory(BaseMemory):
             if len(self.cache) > self.capacity:
                 self.cache.popitem(last=False)  # Evict first item (Least Recently Used)
 
-    def retrieve(self, query: str, top_k: int = 1) -> List[Dict[str, Any]]:
+    def retrieve(self, query: str, top_k: int = 1, current_time: float = None) -> List[Dict[str, Any]]:
         results = []
         # Iterate over items to find matches
         for key, memory in list(self.cache.items()):  # Cast to list to avoid runtime errors

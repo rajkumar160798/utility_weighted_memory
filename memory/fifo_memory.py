@@ -15,7 +15,7 @@ class FIFOMemory(BaseMemory):
             self.buffer.popleft()  # FIFO eviction
         self.buffer.append(memory)
 
-    def retrieve(self, query: str, top_k: int = 1) -> List[Dict[str, Any]]:
+    def retrieve(self, query: str, top_k: int = 1, current_time: float = None) -> List[Dict[str, Any]]:
         # naive keyword match
         results = [m for m in self.buffer if query.lower() in m["content"].lower()]
         return results[:top_k]

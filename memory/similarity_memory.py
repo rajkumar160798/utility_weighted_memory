@@ -20,7 +20,7 @@ class SimilarityOnlyMemory(BaseMemory):
             self.memories.pop(0)  # naive eviction
         self.memories.append(memory)
 
-    def retrieve(self, query: str, top_k: int = 1) -> List[Dict[str, Any]]:
+    def retrieve(self, query: str, top_k: int = 1, current_time: float = None) -> List[Dict[str, Any]]:
         scored = [
             (self._similarity(query, m["content"]), m)
             for m in self.memories
