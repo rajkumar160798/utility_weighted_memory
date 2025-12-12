@@ -23,12 +23,14 @@ class UtilityWeightedMemory(BaseMemory):
     def _score(self, memory: Dict[str, Any], current_time: float) -> float:
         freq = memory.get("access_count", 0)
         impact = memory.get("impact", 0)
-        age = current_time - memory.get("timestamp", current_time)
+        last_access = memory.get("last_access_time", memory.get("timestamp", current_time))
+        age = current_time - last_access
         decay = math.exp(-self.decay_lambda * age)
-        return self.w_freq * freq + self.w_impact * impact * decay
+        return (self.w_freq * freq + self.w_impact * impact) * decay
 
     def add(self, memory: Dict[str, Any]):
         memory["access_count"] = 0
+        memory["last_access_time"] = time.time()
         if len(self.memories) >= self.capacity:
             # Find memory with lowest utility score
             current_time = time.time()
@@ -38,11 +40,13 @@ class UtilityWeightedMemory(BaseMemory):
         self.memories.append(memory)
 
     def retrieve(self, query: str, top_k: int = 1) -> List[Dict[str, Any]]:
-        # Keyword match and update access count
+        # Keyword match and update access count and last access time
         results = []
+        current_time = time.time()
         for m in self.memories:
             if query.lower() in m["content"].lower():
                 m["access_count"] = m.get("access_count", 0) + 1
+                m["last_access_time"] = current_time
                 results.append(m)
         return results[:top_k]
 
