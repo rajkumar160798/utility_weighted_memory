@@ -207,15 +207,6 @@ This is a solid, well-founded research artifact. The methodology is sound, the e
    - No hardcoded paths or secrets
    - MIT/Apache license recommended
 
-RUN set -eux; \
-    apt-get update && apt-get install -y curl ca-certificates && \
-    K8S_VERSION="$(curl -fsSL https://dl.k8s.io/release/stable.txt)" && \
-    echo "Resolved K8S_VERSION=${K8S_VERSION}" && \
-    curl -fsSL "https://dl.k8s.io/release/${K8S_VERSION}/bin/linux/amd64/kubectl" \
-      -o /usr/local/bin/kubectl && \
-    chmod +x /usr/local/bin/kubectl && \
-    kubectl version --client && \
-    rm -rf /var/lib/apt/lists/*
 
 ---
 
